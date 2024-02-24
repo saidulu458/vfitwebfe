@@ -1,0 +1,17 @@
+---
+- name: Replace files from Server A to Servers B, C, D
+  hosts: VFITWEBFE  # Replace with the actual group name from /etc/ansible/hosts
+  become: true  # If you need elevated privileges on the servers
+
+  tasks:
+    - name: Synchronize file1 to Servers B, C, D
+      ansible.builtin.synchronize:
+        src: "/home/weloadm/opt/web/java/mmweb/mmear/file5.ear"  # Source file1 on Server A
+        dest: "/home/weloadm/opt/web/java/mmweb/mmear/live/app"  # Destination path on Servers B, C, D
+        mode: push
+
+    - name: Synchronize file2 to Servers B, C, D
+      ansible.builtin.synchronize:
+        src: "/home/weloadm/opt/web/java/mmweb/mmear/file5.txt"  # Source file1 on Server A
+        dest: "/home/weloadm/opt/web/java/mmweb/mmear/live/app"  # Destination path on Servers B, C, D
+        mode: push

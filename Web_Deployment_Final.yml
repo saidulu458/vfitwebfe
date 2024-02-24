@@ -1,0 +1,33 @@
+---
+- name: Transfer and Replace Files from Server A to Servers B, C, D
+  hosts: BACKUP:VFITWEBFE  # Replace with the actual group names from /etc/ansible/hosts
+  become: true  # If you need elevated privileges on the servers
+
+  tasks:
+    - name: Get the current date
+      ansible.builtin.set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+
+    - name: Take backup of file5.ear in group BACKUP
+      ansible.builtin.shell:
+        cmd: "cp /home/weloadm/opt/web/java/mmweb/mmear/live/app/file5.ear /home/weloadm/opt/web/java/mmweb/mmear/live/app/backup/file5.ear_bkp_{{ current_date }}"
+      when: "'BACKUP' in group_names"
+
+    - name: Take backup of file5.txt in group BACKUP
+      ansible.builtin.shell:
+        cmd: "cp /home/weloadm/opt/web/java/mmweb/mmear/live/app/file5.txt /home/weloadm/opt/web/java/mmweb/mmear/live/app/backup/file5.txt_bkp_{{ current_date }}"
+      when: "'BACKUP' in group_names"
+
+    - name: Synchronize file5.ear to Servers B, C, D
+      ansible.builtin.synchronize:
+        src: "/home/weloadm/opt/web/java/mmweb/mmear/file5.ear"  # Source file5.ear on Server A
+        dest: "/home/weloadm/opt/web/java/mmweb/mmear/live/app"  # Destination path on Servers B, C, D
+        mode: push
+      when: "'VFITWEBFE' in group_names"
+
+    - name: Synchronize file5.txt to Servers B, C, D
+      ansible.builtin.synchronize:
+        src: "/home/weloadm/opt/web/java/mmweb/mmear/file5.txt"  # Source file5.txt on Server A
+        dest: "/home/weloadm/opt/web/java/mmweb/mmear/live/app"  # Destination path on Servers B, C, D
+        mode: push
+      when: "'VFITWEBFE' in group_names"

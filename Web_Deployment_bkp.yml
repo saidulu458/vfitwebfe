@@ -1,0 +1,18 @@
+---
+- name: Transfer files from Server A to Servers B, C, D
+  hosts: BACKUP
+  become: true  # If you need elevated privileges on the servers
+
+  tasks:
+    - name: Get the current date
+      ansible.builtin.set_fact:
+        current_date: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+
+    - name: Take backup of the file
+      ansible.builtin.shell:
+        cmd: "cp /opt/web/java/mmweb/mmear/live/app/file3.ear /opt/web/java/mmweb/mmear/live/app/backup/file3.ear_bkp_{{ current_date }}"
+
+
+    - name: Take backup of the file
+      ansible.builtin.shell:
+        cmd: "cp /opt/web/java/mmweb/mmear/live/app/file3.txt /opt/web/java/mmweb/mmear/live/app/backup/file3.txt_bkp_{{ current_date }}"
